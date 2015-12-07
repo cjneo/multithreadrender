@@ -250,17 +250,19 @@ int main(){
 
 #if 1
 	//create thread
-	renderThread();
-	
-//ThreadInit(0);	 
+	renderThread();	 
 	int *ret; 
     pthread_join(ntid, (void **)(&ret)); 
+glDeleteProgram(userData.programObject);
    //printf("thr_fn return %d\n", (int)(*ret));
  #endif
 //Init(0);
 int i=0;
 while(i<3)
 {
+renderThread();	 
+	int *ret; 
+    pthread_join(ntid, (void **)(&ret)); 
 	Draw(_canvas);
 	i++;
 	sleep(1);
@@ -268,10 +270,10 @@ while(i<3)
 	//EGLint err=eglGetError();
 }
 cout<<"finish<<"<<endl;
-//glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
-//glClear ( GL_COLOR_BUFFER_BIT );
-//eglSwapBuffers ( _canvas->_eglDisplay, _canvas->_eglSurface );
-//glDeleteProgram(userData.programObject);
+glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
+glClear ( GL_COLOR_BUFFER_BIT );
+eglSwapBuffers ( _canvas->_eglDisplay, _canvas->_eglSurface );
+glDeleteProgram(userData.programObject);
 EGLint err22=eglGetError();
 	cout<<"renderthread makecurrent error:"<<err22<<endl;
 printf("%x\n",err22);
