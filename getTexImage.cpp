@@ -56,6 +56,33 @@ for(int i=0;i<height;i++){
 }
 }
 
+void GetTexFromFrameBuffer(GLuint fboname){
+	//Bind the FBO
+glBindFramebuffer(GL_FRAMEBUFFER, fboname);
+// set the viewport as the FBO won't be the same dimension as the screen
+int width=2,height=2;
+glViewport(0, 0, width, height);
+vector< unsigned char > pixels ( width * height * 4 ,0);
+ 
+glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, &pixels[0]);
+GLenum error = glGetError();
+	printf("error: %x\n",error);
+//Bind your main FBO again
+glBindFramebuffer(GL_FRAMEBUFFER,0);
+// set the viewport as the FBO won't be the same dimension as the screen
+glViewport(0, 0, 250, 250);
+for(int i=0;i<height;i++){
+	for(int j=0;j<width;j++){
+	int offset=(i*width+j)*4;
+    cout << "|" << (int)pixels[0+offset];
+    cout << " " << (int)pixels[1+offset] ;
+    cout << " " << (int)pixels[2+offset] ;
+    cout << " " << (int)pixels[3+offset] ;
+	cout<<"|";
+	}
+    cout << endl;
+}
+}
  GLuint Texture2DUseFramBuffer( )
 {
    GLuint fboname;
@@ -67,8 +94,8 @@ for(int i=0;i<height;i++){
    // 2x2 Image, 3 bytes per pixel (R, G, B)
    GLubyte pixels[4 * 3] =
    {  
-      255,   0,   0, // Red
-        0, 255,   0, // Green
+      255,   123,   0, // Red
+        0, 255,   123, // Green
         0,   0, 255, // Blue
       255, 255,   0  // Yellow
    };
@@ -99,7 +126,7 @@ else{
 	std::cout<<"it is ok"<<std::endl;
 }
 glBindFramebuffer(GL_FRAMEBUFFER,0);
-
+GetTexFromFrameBuffer(fboname);
 glFinish();
  for(int i=0;i<12;i++){
 	printf(" %d ",pixels[i]);	

@@ -219,7 +219,7 @@ void renderThread(){
 
 int main(){
 	_canvas=new CanvasX11();
-	if(!_canvas->createWindow(25,25,0,"")){
+	if(!_canvas->createWindow(250,250,0,"")){
 	   cout<<"create window error"<<endl;	
 	}
 	 glViewport ( 0, 0, _canvas->_width, _canvas->_height );
