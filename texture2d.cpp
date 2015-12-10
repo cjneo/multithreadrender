@@ -1,9 +1,9 @@
 #include"CanvasX11.h"
 #include<iostream>
 #include "Canvas.h"
-#include "CanvasX11.h"
 #include <EGL/egl.h>
-#include <GLES2/gl2.h>
+//#include <GLES2/gl2.h>
+
 #include <stdlib.h>
 #include <pthread.h> 
 #include <unistd.h> 
@@ -12,6 +12,8 @@
 #include "cjesUtil.h"
 using namespace World;
 using namespace std;
+void readTexture2D(int width,int height);
+ GLuint Texture2DUseFramBuffer( );
 typedef struct
 {
    // Handle to a program object
@@ -74,10 +76,14 @@ void printids(const char *s)
    // Set the filtering mode
    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-
+glFinish();
+ for(int i=0;i<12;i++){
+	printf(" %d ",pixels[i]);	
+}
    return textureId;
 
 }
+
 
 ///
 // Initialize the shader and program object
@@ -113,7 +119,7 @@ printids("new thread:");
  
 userData.textureId=CreateSimpleTexture2D();
 }
-bool  Init (   )
+bool  Init ( )
 {
 //UserData *userData = esContext->userData;
    GLbyte vShaderStr[] =  
@@ -136,7 +142,7 @@ bool  Init (   )
       "}                                                   \n";
 
    // Load the shaders and get a linked program object
-   userData.programObject = esLoadProgram ( vShaderStr, fShaderStr );
+   userData.programObject = esLoadProgram ( (char *)vShaderStr, (char *)fShaderStr );
 
    // Get the attribute locations
    userData.positionLoc = glGetAttribLocation ( userData.programObject, "a_position" );
@@ -189,7 +195,7 @@ void Draw (   )
    glEnableVertexAttribArray ( userData.texCoordLoc );
 
    // Bind the texture
-   glActiveTexture ( GL_TEXTURE0 );
+   //glActiveTexture ( GL_TEXTURE0 );
    glBindTexture ( GL_TEXTURE_2D, userData.textureId );
 
    // Set the sampler texture unit to 0
@@ -213,33 +219,33 @@ void renderThread(){
 
 int main(){
 	_canvas=new CanvasX11();
-	if(!_canvas->createWindow(250,250,0,"")){
+	if(!_canvas->createWindow(25,25,0,"")){
 	   cout<<"create window error"<<endl;	
 	}
-	 glViewport ( 0, 0, 250, 250 );
+	 glViewport ( 0, 0, _canvas->_width, _canvas->_height );
 	cout<<"ok"<<endl;
 	 Init ();
 
 #if 1
-	//create thread
+	  userData.textureId=CreateSimpleTexture2D();
 	renderThread();	 
 	int *ret; 
-    pthread_join(ntid, (void **)(&ret)); 
-//glDeleteProgram(userData.programObject);
-   //printf("thr_fn return %d\n", (int)(*ret));
+   pthread_join(ntid, (void **)(&ret)); 
+ //userData.textureId=CreateSimpleTexture2D();
  #endif
-//Init(0);
+Texture2DUseFramBuffer();
+ //readTexture2D(_canvas->_width,_canvas->_height);
 int i=0;
-while(i<3)
+while(i<10)
 {
-   //renderThread();	 
-//	int *ret; 
-   // pthread_join(ntid, (void **)(&ret)); 
-	Draw( );
+ 
+	Draw();
 	i++;
 	sleep(1);
 	cout<<i<<endl;
-	//EGLint err=eglGetError();
+ //readTexture2D(_canvas->_width,_canvas->_height);
+	eglSwapBuffers ( _canvas->_eglDisplay, _canvas->_eglSurface ); 
+
 }
 cout<<"finish<<"<<endl;
 glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
